@@ -3,6 +3,7 @@ const addBtn = document.getElementById("addBtn");
 const saveBtn = document.getElementById("saveBtn");
 
 let people = [];
+let focusState = null;
 
 function addPerson(data = { name: "", paid: 0, excluded: false }) {
     people.push(data);
@@ -109,6 +110,19 @@ function computeAllTransactions() {
 }
 
 function render() {
+    const active = document.activeElement;
+    
+    if (active && (active.tagName === "INPUT")) {
+        focusState = {
+            index: [...tableBody.querySelectorAll("input")].indexOf(active),
+            value: active.value,
+            selectionStart: active.selectionStart,
+            selectionEnd: active.selectionEnd
+        };
+    } else {
+        focusState = null;
+    }
+    
     tableBody.innerHTML = "";
 
     const transactions = computeAllTransactions();
@@ -146,6 +160,22 @@ function render() {
 
         tableBody.appendChild(debtRow);
     });
+
+    if (focusState) {
+        const inputs = tableBody.querySelectorAll("input");
+        
+        const el = inputs[focusState.index];
+        if (el) {
+            el.focus();
+            
+            if (el.type === "text" || el.type === "number") {
+                el.setSelectionRange(
+                    focusState.selectionStart,
+                    focusState.selectionEnd
+                );
+            }
+        }
+    }
 }
 
 /*
