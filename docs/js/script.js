@@ -11,7 +11,7 @@ function addPerson(data = { name: "", paid: 0, excluded: false }) {
 }
 
 function removePerson(index) {
-    if (!confirm("Удалить?")) return;
+    if (!confirm(`Удалить информацию об участнике ${people[index].name}?`)) return;
     people.splice(index, 1);
     render();
 }
@@ -21,7 +21,26 @@ function update(index, field, value) {
     people[index][field] = value;
     render();
 }
+function onAmountKeyDown(e, index, el) {
+    // TAB обрабатываем отдельно
+    if (handleTabNavigation(e, el)) return;
 
+    if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+
+    e.preventDefault();
+
+    let value = parseNumber(el.value);
+
+    let step = 10;
+    if (e.shiftKey) step = 100;
+    if (e.ctrlKey) step = 1000;
+
+    if (e.key === "ArrowUp") value += step;
+    if (e.key === "ArrowDown") value = Math.max(0, value - step);
+
+    people[index].paid = value;
+    el.value = value;
+}
 function applyRounding(transactions) {
     const mode = document.getElementById("roundMode").value;
 
@@ -75,8 +94,6 @@ function computeAllTransactions() {
 
     let result = [];
 
-    // минимизация количества транзакций:
-    // сортируем и "схлопываем" максимально крупные суммы
     debtors.sort((a, b) => b.amount - a.amount);
     creditors.sort((a, b) => b.amount - a.amount);
 
@@ -139,6 +156,7 @@ function render() {
                 onfocus="this.value = ${p.paid}"
                 oninput="onAmountInput(this)"
                 onblur="onAmountBlur(${i}, this)"
+                onkeydown="onAmountKeyDown(event, ${i}, this)"
             ></td>
             <td><input type="checkbox" ${p.excluded ? "checked" : ""} onchange="update(${i}, 'excluded', this.checked)"></td>
             <td><button onclick="removePerson(${i})">Удалить</button></td>
@@ -179,6 +197,15 @@ function render() {
                 );
             }
         }
+    }
+
+    if (window._nextFocusIndex !== undefined) {
+        const inputs = document.querySelectorAll("input");
+
+        const el = inputs[window._nextFocusIndex];
+        if (el) el.focus();
+
+        window._nextFocusIndex = undefined;
     }
 }
 
@@ -221,6 +248,25 @@ function onAmountBlur(index, el) {
 function onAmountInput(el) {
     // разрешаем только цифры
     el.value = el.value.replace(/[^\d]/g, "");
+}
+
+function handleTabNavigation(e, el) {
+    if (e.key !== "Tab") return false;
+
+    const inputs = [...document.querySelectorAll("input")];
+    const index = inputs.indexOf(el);
+
+    let nextIndex;
+
+    if (e.shiftKey) {
+        nextIndex = index > 0 ? index - 1 : inputs.length - 1;
+    } else {
+        nextIndex = index < inputs.length - 1 ? index + 1 : 0;
+    }
+
+    window._nextFocusIndex = nextIndex;
+
+    return true;
 }
 
 saveBtn.onclick = () => {
