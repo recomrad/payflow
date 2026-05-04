@@ -126,5 +126,10 @@ select {
 }
 
 .unnamed {
-    color: #888;
+    color: #999;
+}
+
+input::placeholder {
+    color: #999;
+    font-style: italic;
 }
