@@ -21,6 +21,41 @@ function update(index, field, value) {
     render();
 }
 
+function applyRounding(transactions) {
+    const mode = document.getElementById("roundMode").value;
+
+    return transactions.map(t => {
+        let amount = t.amount;
+
+        switch (mode) {
+            case "ceil":
+                amount = Math.ceil(amount);
+                break;
+
+            case "nearest":
+                amount = Math.round(amount);
+                break;
+
+            case "10":
+                amount = Math.ceil(amount / 10) * 10;
+                break;
+
+            case "100":
+                amount = Math.ceil(amount / 100) * 100;
+                break;
+
+            case "none":
+            default:
+                break;
+        }
+
+        return {
+            ...t,
+            amount
+        };
+    });
+}
+
 function computeAllTransactions() {
     const totalPaid = people.reduce((s, p) => s + p.paid, 0);
     const payers = people.filter(p => !p.excluded);
@@ -70,10 +105,7 @@ function computeAllTransactions() {
         else creditors.sort((a, b) => b.amount - a.amount);
     }
 
-    return result.map(t => ({
-        ...t,
-        amount: Math.ceil(t.amount)
-    }));
+    return applyRounding(result);
 }
 
 function render() {
@@ -159,7 +191,7 @@ function showToast(msg) {
     }, 2000);
 }
 
-
+document.getElementById("roundMode").onchange = () => render();
 
 addBtn.onclick = () => addPerson();
 
