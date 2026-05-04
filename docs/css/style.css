@@ -124,3 +124,7 @@ select {
 .vr {
     margin: 0 10px;
 }
+
+.unnamed {
+    color: #888;
+}
