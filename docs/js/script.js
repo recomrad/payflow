@@ -5,8 +5,15 @@ const saveBtn = document.getElementById("saveBtn");
 let people = [];
 let focusState = null;
 
+function createId() {
+    return crypto.randomUUID ? crypto.randomUUID() : String(Math.floor(Date.now()) + Math.floor(Math.random() * 100000) + Math.floor(Math.random() * 100000));
+}
+
 function addPerson(data = { name: "", paid: 0, excluded: false }) {
-    people.push(data);
+    people.push({
+        id: createId(),
+        ...data
+    });
     render();
 }
 
@@ -79,7 +86,7 @@ function computeAllTransactions() {
 
     const share = totalPaid / payers.length;
 
-    let debtors = [];
+    /*let debtors = [];
     let creditors = [];
 
     people.forEach(p => {
@@ -90,33 +97,43 @@ function computeAllTransactions() {
         } else if (balance > 0.01) {
             creditors.push({ name: p.name, amount: balance });
         }
-    });
+    });*/
+
+    let balances = people.map(p => ({
+        id: p.id,
+        name: p.name,
+        balance: +(p.paid - (p.excluded ? 0 : share)).toFixed(2)
+    })).filter(b => Math.abs(b.balance) > 0.01);
 
     let result = [];
 
-    debtors.sort((a, b) => b.amount - a.amount);
-    creditors.sort((a, b) => b.amount - a.amount);
+    balances.sort((a, b) => a.balance - b.balance);
+
+    let debtors = balances.filter(b => b.balance < 0);
+    let creditors = balances.filter(b => b.balance > 0);
+
+    debtors.sort((a, b) => b.balance - a.balance);
+    creditors.sort((a, b) => b.balance - a.balance);
 
     while (debtors.length && creditors.length) {
         let d = debtors[0];
         let c = creditors[0];
 
-        let amount = Math.min(d.amount, c.amount);
+        let amount = Math.min(d.amount ?? -d.balance, c.amount ?? c.balance);
 
         result.push({
+            fromId: d.id,
+            toId: c.id,
             from: d.name,
             to: c.name,
             amount
         });
 
-        d.amount -= amount;
-        c.amount -= amount;
+        d.balance += amount;
+        c.balance -= amount;
 
-        if (d.amount < 0.01) debtors.shift();
-        else debtors.sort((a, b) => b.amount - a.amount);
-
-        if (c.amount < 0.01) creditors.shift();
-        else creditors.sort((a, b) => b.amount - a.amount);
+        if (Math.abs(d.balance) < 0.01) debtors.shift();
+        if (Math.abs(c.balance) < 0.01) creditors.shift();
     }
 
     return applyRounding(result);
@@ -146,9 +163,9 @@ function render() {
         const row = document.createElement("tr");
 
         row.innerHTML = `
-            <td class="index">${i + 1}</td>
-            <td><input value="${p.name}" onchange="update(${i}, 'name', this.value)"></td>
-            <td><input 
+            <td class="index">${String(i + 1).padStart(2, '0') }</td>
+            <td><input id="name-input-${i}" value="${p.name}" onchange="update(${i}, 'name', this.value)" placeholder="${p.id}"></td>
+            <td><input id="paid-input-${i}"
                 type="text"
                 inputmode="numeric"
                 pattern="[0-9]*"
@@ -158,25 +175,21 @@ function render() {
                 onblur="onAmountBlur(${i}, this)"
                 onkeydown="onAmountKeyDown(event, ${i}, this)"
             ></td>
-            <td><input type="checkbox" ${p.excluded ? "checked" : ""} onchange="update(${i}, 'excluded', this.checked)"></td>
-            <td><button onclick="removePerson(${i})">Удалить</button></td>
+            <td class='excludedItem'><input id="excluded-input-${i}" type="checkbox" ${p.excluded ? "checked" : ""} onchange="update(${i}, 'excluded', this.checked)"></td>
+            <td><button id="remove-btn-${i}" onclick="removePerson(${i})">Удалить</button></td>
         `;
 
         tableBody.appendChild(row);
 
         // показываем ТОЛЬКО исходящие долги
-        const myDebts = transactions.filter(t => t.from === p.name);
+        const myDebts = transactions.filter(t => t.fromId === p.id);
 
         const debtRow = document.createElement("tr");
         debtRow.className = "debts";
 
         debtRow.innerHTML = `
-            <td colspan="4">
-                ${
-                    myDebts.length
-                        ? myDebts.map(d => `→ ${d.to}: ${d.amount.toFixed(2)} ₽`).join("<br>")
-                        : "—"
-                }
+            <td colspan="5">
+                ${myDebts.length ? myDebts.map(d => `→ ${d.to ? d.to : `<em class='unnamed'>unnamed-${people.find(p => p.id === d.toId)?.index || d.toId}</em>`} : ${d.amount.toFixed(2)} ₽`).join("<br>") : "—"}
             </td>
         `;
 
@@ -209,10 +222,6 @@ function render() {
     }
 }
 
-/*
-  Фикс Unicode:
-  btoa работает только с Latin1 → используем encodeURIComponent
-*/
 function encodeData(data) {
     return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
 }
@@ -232,7 +241,7 @@ function parseNumber(value) {
 
 function formatNumber(value) {
     if (!value) return "0";
-    return Number(value).toLocaleString("ru-RU");
+    return Number(value).toLocaleString("ru-RU") + " ₽";
 }
 
 function onAmountBlur(index, el) {
@@ -283,9 +292,17 @@ saveBtn.onclick = () => {
 
 function load() {
     const saved = localStorage.getItem("debtsData");
+
     if (saved) {
         try {
-            people = decodeData(saved);
+            const parsed = decodeData(saved);
+
+            people = parsed.map(p => ({
+                id: p.id || createId(),
+                name: p.name,
+                paid: p.paid,
+                excluded: p.excluded
+            }));
         } catch {
             people = [];
         }
