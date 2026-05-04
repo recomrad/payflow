@@ -70,7 +70,10 @@ function computeAllTransactions() {
         else creditors.sort((a, b) => b.amount - a.amount);
     }
 
-    return result;
+    return result.map(t => ({
+        ...t,
+        amount: Math.ceil(t.amount)
+    }));
 }
 
 function render() {
