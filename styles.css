@@ -1,0 +1,96 @@
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f4f6f8;
+    margin: 30px;
+    color: #222;
+}
+
+h2 {
+    margin-bottom: 15px;
+}
+
+.controls {
+    margin-bottom: 15px;
+}
+
+button {
+    background: #2f3b52;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin-right: 5px;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #44516b;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+th {
+    background: #2f3b52;
+    color: white;
+    text-align: left;
+}
+
+th, td {
+    padding: 10px;
+}
+
+tr:nth-child(even) {
+    background: #f9fafb;
+}
+
+input {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #ccd2da;
+    border-radius: 6px;
+    background: #fdfdfd;
+    box-sizing: border-box;
+}
+
+.index {
+    color: #888;
+    width: 40px;
+}
+
+input[type="checkbox"] {
+    transform: scale(1.2);
+}
+
+.debts {
+    background: #eef2f7;
+    font-size: 0.9em;
+    color: #333;
+}
+
+#count {
+    margin-left: 10px;
+    color: #555;
+}
+
+#toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #2f3b52;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    opacity: 0;
+    transition: 0.3s;
+}
+
+#toast.show {
+    opacity: 1;
+}
