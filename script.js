@@ -136,7 +136,15 @@ function render() {
             <td class="index">${i + 1}</td>
             <td><input value="${p.name}" onchange="update(${i}, 'name', this.value)"></td>
             <td><input type="number" value="${p.paid}" onchange="update(${i}, 'paid', this.value)"></td>
-            <td><input type="checkbox" ${p.excluded ? "checked" : ""} onchange="update(${i}, 'excluded', this.checked)"></td>
+            <td><input 
+                type="text"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                value="${formatNumber(p.paid)}"
+                onfocus="this.value = ${p.paid}"
+                oninput="onAmountInput(this)"
+                onblur="onAmountBlur(${i}, this)"
+            ></td>
             <td><button onclick="removePerson(${i})">Удалить</button></td>
         `;
 
@@ -188,6 +196,35 @@ function encodeData(data) {
 
 function decodeData(str) {
     return JSON.parse(decodeURIComponent(escape(atob(str))));
+}
+
+function parseNumber(value) {
+    if (!value) return 0;
+
+    // убираем всё кроме цифр
+    const cleaned = value.toString().replace(/[^\d]/g, "");
+
+    return parseInt(cleaned, 10) || 0;
+}
+
+function formatNumber(value) {
+    if (!value) return "0";
+    return Number(value).toLocaleString("ru-RU");
+}
+
+function onAmountBlur(index, el) {
+    const value = parseNumber(el.value);
+
+    people[index].paid = value;
+
+    el.value = formatNumber(value);
+
+    render();
+}
+
+function onAmountInput(el) {
+    // разрешаем только цифры
+    el.value = el.value.replace(/[^\d]/g, "");
 }
 
 saveBtn.onclick = () => {
