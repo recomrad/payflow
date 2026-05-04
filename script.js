@@ -163,6 +163,8 @@ function decodeData(str) {
 saveBtn.onclick = () => {
     try {
         localStorage.setItem("debtsData", encodeData(people));
+        localStorage.setItem("roundMode", document.getElementById("roundMode").value);
+
         showToast("Сохранено");
     } catch (e) {
         console.error(e);
@@ -172,12 +174,17 @@ saveBtn.onclick = () => {
 
 function load() {
     const saved = localStorage.getItem("debtsData");
-    if (!saved) return;
+    if (saved) {
+        try {
+            people = decodeData(saved);
+        } catch {
+            people = [];
+        }
+    }
 
-    try {
-        people = decodeData(saved);
-    } catch {
-        people = [];
+    const savedMode = localStorage.getItem("roundMode");
+    if (savedMode) {
+        document.getElementById("roundMode").value = savedMode;
     }
 }
 
@@ -191,7 +198,10 @@ function showToast(msg) {
     }, 2000);
 }
 
-document.getElementById("roundMode").onchange = () => render();
+document.getElementById("roundMode").onchange = () => {
+    localStorage.setItem("roundMode", document.getElementById("roundMode").value);
+    render();
+};
 
 addBtn.onclick = () => addPerson();
 
