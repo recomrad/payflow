@@ -13,6 +13,16 @@
     <button id="addBtn">Добавить</button>
     <button id="saveBtn">Сохранить</button>
     <span id="count"></span>
+    <label>
+    Округление:
+    <select id="roundMode">
+        <option value="ceil" selected>Вверх</option>
+        <option value="none">Без округления</option>
+        <option value="nearest">До ближайшего</option>
+        <option value="10">До 10</option>
+        <option value="100">До 100</option>
+    </select>
+</label>
 </div>
 
 <div id="toast"></div>
@@ -23,7 +33,7 @@
             <th>#</th>
             <th>Кто</th>
             <th>Вложил (₽)</th>
-            <th style="text-align: center;">Не скидывается</th>
+            <th>Не скидывается</th>
             <th></th>
         </tr>
     </thead>
