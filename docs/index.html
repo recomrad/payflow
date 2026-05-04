@@ -7,40 +7,47 @@
 </head>
 <body>
 
-<h2>Разделение расходов</h2>
+    <h2>Разделение расходов</h2>
 
-<div class="controls">
-    <button id="addBtn">Добавить</button>
-    <button id="saveBtn">Сохранить</button>
-    <span class="vr">|</span>
-    <span id="count"></span>
-    <span class="vr">|</span>
-    <label>
-        Округление:
-        <select id="roundMode">
-            <option value="100">До 100</option>
-            <option value="10" selected>До 10</option>
-            <option value="ceil">До целого</option>
-            <option value="none">Без округления</option>
-        </select>
-    </label>
-</div>
+    <div class="controls">
+        <button id="addBtn">Добавить</button>
+        <button id="saveBtn">Сохранить</button>
+        <span class="vr">|</span>
+        <span id="count"></span>
+        <span class="vr">|</span>
+        <label>
+            Округление:
+            <select id="roundMode">
+                <option value="100">До 100</option>
+                <option value="10" selected>До 10</option>
+                <option value="ceil">До целого</option>
+                <option value="none">Без округления</option>
+            </select>
+        </label>
+    </div>
 
-<div id="toast"></div>
+    <div id="toast"></div>
 
-<table id="peopleTable">
-    <thead>
-        <tr>
-            <th class='indexHeader'>#</th>
-            <th class='whoHeader'>Участник</th>
-            <th class='amountHeader'>Вложения</th>
-            <th class='excludedHeader'>Не скидывается</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+    <table id="peopleTable">
+        <thead>
+            <tr>
+                <th class='indexHeader'>#</th>
+                <th class='whoHeader'>Участник</th>
+                <th class='amountHeader'>Вложения</th>
+                <th class='excludedHeader'>Не скидывается</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
-<script src="js/script.js"></script>
+    <script src="js/init.js"></script>
+    <script src="js/helperFunctions.js"></script>
+    <script src="js/amountFieldFunctions.js"></script>
+    <script src="js/dataFunctions.js"></script>
+    <script src="js/personFunctions.js"></script>
+    <script src="js/renderFunctions.js"></script>
+    <script src="js/computeFunctions.js"></script>
+    <script src="js/start.js"></script>
 </body>
 </html>
