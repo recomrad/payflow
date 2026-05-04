@@ -33,10 +33,6 @@ function applyRounding(transactions) {
                 amount = Math.ceil(amount);
                 break;
 
-            case "nearest":
-                amount = Math.round(amount);
-                break;
-
             case "10":
                 amount = Math.ceil(amount / 10) * 10;
                 break;
