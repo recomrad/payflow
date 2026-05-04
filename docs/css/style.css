@@ -61,7 +61,6 @@ input {
 
 .index {
     color: #888;
-    width: 40px;
 }
 
 input[type="checkbox"] {
@@ -104,8 +103,22 @@ select {
     margin-left: 5px;
 }
 
+.indexHeader {
+    width: 1px;
+    text-align: center;
+}
+
 .amountHeader {
     width: 200px;
+}
+
+.excludedHeader {
+    width: 160px;
+    text-align: center;
+}
+
+.excludedItem {
+    text-align: center;
 }
 
 .vr {
