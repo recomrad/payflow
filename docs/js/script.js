@@ -18,7 +18,7 @@ function addPerson(data = { name: "", paid: 0, excluded: false }) {
 }
 
 function removePerson(index) {
-    if (!confirm(`Удалить информацию об участнике ${people[index].name}?`)) return;
+    if (!confirm(`Удалить информацию об участнике ${people[index].name ? people[index].name : `без имени (${people[index].id})`}?`)) return;
     people.splice(index, 1);
     render();
 }
@@ -189,7 +189,7 @@ function render() {
 
         debtRow.innerHTML = `
             <td colspan="5">
-                ${myDebts.length ? myDebts.map(d => `→ ${d.to ? d.to : `<em class='unnamed'>unnamed-${people.find(p => p.id === d.toId)?.index || d.toId}</em>`} : ${d.amount.toFixed(2)} ₽`).join("<br>") : "—"}
+                ${myDebts.length ? myDebts.map(d => `→ ${d.to ? d.to : `<em class='unnamed'>Без имени (${people.find(p => p.id === d.toId)?.index || d.toId})</em>`} : ${d.amount.toFixed(2)} ₽`).join("<br>") : "—"}
             </td>
         `;
 
