@@ -103,3 +103,7 @@ select {
     background: #fdfdfd;
     margin-left: 5px;
 }
+
+.amountHeader {
+    width: 200px;
+}
