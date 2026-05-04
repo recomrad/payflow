@@ -135,7 +135,6 @@ function render() {
         row.innerHTML = `
             <td class="index">${i + 1}</td>
             <td><input value="${p.name}" onchange="update(${i}, 'name', this.value)"></td>
-            <td><input type="number" value="${p.paid}" onchange="update(${i}, 'paid', this.value)"></td>
             <td><input 
                 type="text"
                 inputmode="numeric"
@@ -145,6 +144,7 @@ function render() {
                 oninput="onAmountInput(this)"
                 onblur="onAmountBlur(${i}, this)"
             ></td>
+            <td><input type="checkbox" ${p.excluded ? "checked" : ""} onchange="update(${i}, 'excluded', this.checked)"></td>
             <td><button onclick="removePerson(${i})">Удалить</button></td>
         `;
 
