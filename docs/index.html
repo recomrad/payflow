@@ -12,16 +12,18 @@
 <div class="controls">
     <button id="addBtn">Добавить</button>
     <button id="saveBtn">Сохранить</button>
+    <span class="vr">|</span>
     <span id="count"></span>
+    <span class="vr">|</span>
     <label>
-    Округление:
-    <select id="roundMode">
-        <option value="ceil" selected>Вверх</option>
-        <option value="none">Без округления</option>
-        <option value="10">До 10</option>
-        <option value="100">До 100</option>
-    </select>
-</label>
+        Округление:
+        <select id="roundMode">
+            <option value="100">До 100</option>
+            <option value="10" selected>До 10</option>
+            <option value="ceil">До целого</option>
+            <option value="none">Без округления</option>
+        </select>
+    </label>
 </div>
 
 <div id="toast"></div>

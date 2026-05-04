@@ -107,3 +107,7 @@ select {
 .amountHeader {
     width: 200px;
 }
+
+.vr {
+    margin: 0 10px;
+}
