@@ -95,3 +95,11 @@ input[type="checkbox"] {
 #toast.show {
     opacity: 1;
 }
+
+select {
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #ccd2da;
+    background: #fdfdfd;
+    margin-left: 5px;
+}
